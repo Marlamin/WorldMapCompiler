@@ -18,6 +18,7 @@ namespace WorldMapCompiler
             var saveExplored = bool.Parse(config["saveExploredMaps"]);
             var saveUnexplored = bool.Parse(config["saveUnexploredMaps"]);
             var saveLayers = bool.Parse(config["saveMapLayers"]);
+            var saveExploredMapsWithoutUnexplored = bool.Parse(config["saveExploredMapsWithoutUnexplored"]);
 
             if (saveExplored && !Directory.Exists("explored"))
             {
@@ -32,6 +33,11 @@ namespace WorldMapCompiler
             if (saveLayers && !Directory.Exists("layers"))
             {
                 Directory.CreateDirectory("layers");
+            }
+
+            if (saveExploredMapsWithoutUnexplored && !Directory.Exists("exploredNoUnexplored"))
+            {
+                Directory.CreateDirectory("exploredNoUnexplored");
             }
 
             var locale = CASCLib.LocaleFlags.enUS;
@@ -160,8 +166,10 @@ namespace WorldMapCompiler
                         }
 
                         var bmp = new Bitmap((int)res_y, (int)res_x);
-
                         var g = Graphics.FromImage(bmp);
+
+                        var bmp2 = new Bitmap((int)res_y, (int)res_x);
+                        var g2 = Graphics.FromImage(bmp2);
 
                         for (var cur_x = 0; cur_x < maxRows + 1; cur_x++)
                         {
@@ -273,7 +281,14 @@ namespace WorldMapCompiler
                                                 {
                                                     layerGraphics.DrawImage(blp.GetBitmap(0), cur_y * 256, cur_x * 256, new Rectangle(0, 0, 256, 256), GraphicsUnit.Pixel);
                                                 }
-                                                g.DrawImage(blp.GetBitmap(0), posY, posX, new Rectangle(0, 0, 256, 256), GraphicsUnit.Pixel);
+
+                                                var blpBMP = blp.GetBitmap(0);
+                                                g.DrawImage(blpBMP, posY, posX, new Rectangle(0, 0, 256, 256), GraphicsUnit.Pixel);
+
+                                                if (saveExploredMapsWithoutUnexplored)
+                                                {
+                                                    g2.DrawImage(blpBMP, posY, posX, new Rectangle(0, 0, 256, 256), GraphicsUnit.Pixel);
+                                                }
                                             }
                                             catch (Exception e)
                                             {
@@ -298,6 +313,11 @@ namespace WorldMapCompiler
                         if (saveExplored)
                         {
                             bmp.Save("explored/ " + CleanFileName(mapRow.ID + " - " + mapName + ".png"));
+                        }
+
+                        if (saveExploredMapsWithoutUnexplored)
+                        {
+                            bmp2.Save("exploredNoUnexplored/ " + CleanFileName(mapRow.ID + " - " + mapName + ".png"));
                         }
                     }
                 }
