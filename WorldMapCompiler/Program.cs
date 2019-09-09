@@ -67,87 +67,47 @@ namespace WorldMapCompiler
                 CASC.InitCasc(null, null, config["program"], locale);
             }
 
-            using (var UIMapStream = CASC.OpenFile(1957206))
-            using (var UIMapXArtStream = CASC.OpenFile(1957217))
-            using (var UIMapArtTileStream = CASC.OpenFile(1957210))
-            using (var UIMapArtStream = CASC.OpenFile(1957202))
-            using (var UIMapArtStyleStream = CASC.OpenFile(1957208))
-            using (var WorldMapOverlayStream = CASC.OpenFile(1134579))
-            using (var WorldMapOverlayTileStream = CASC.OpenFile(1957212))
-            {
-                if (!Directory.Exists("dbcs"))
-                {
-                    Directory.CreateDirectory("dbcs");
-                }
+            var dbcd = new DBCD.DBCD(new CASCDBCProvider(), new DBCD.Providers.GithubDBDProvider());
 
-                var uimapfs = File.Create("dbcs/UIMap.db2");
-                UIMapStream.CopyTo(uimapfs);
-                uimapfs.Close();
-
-                var uimapxartfs = File.Create("dbcs/UIMapXMapArt.db2");
-                UIMapXArtStream.CopyTo(uimapxartfs);
-                uimapxartfs.Close();
-
-                var uimapatfs = File.Create("dbcs/UIMapArtTile.db2");
-                UIMapArtTileStream.CopyTo(uimapatfs);   
-                uimapatfs.Close();
-
-                var uimapart = File.Create("dbcs/UIMapArt.db2");
-                UIMapArtStream.CopyTo(uimapart);
-                uimapart.Close();
-
-                var uimapartstyle = File.Create("dbcs/UIMapArtStyleLayer.db2");
-                UIMapArtStyleStream.CopyTo(uimapartstyle);
-                uimapartstyle.Close();
-
-                var wmofs = File.Create("dbcs/WorldMapOverlay.db2");
-                WorldMapOverlayStream.CopyTo(wmofs);
-                wmofs.Close();
-
-                var wmotfs = File.Create("dbcs/WorldMapOverlayTile.db2");
-                WorldMapOverlayTileStream.CopyTo(wmotfs);
-                wmotfs.Close();
-            }
-
-            var UIMap = DBCManager.LoadDBC("UIMap", CASC.BuildName);
-            var UIMapXArt = DBCManager.LoadDBC("UIMapXMapArt", CASC.BuildName);
-            var UIMapArtTile = DBCManager.LoadDBC("UIMapArtTile", CASC.BuildName);
-            var UIMapArt = DBCManager.LoadDBC("UIMapArt", CASC.BuildName);
-            var UIMapArtStyleLayer = DBCManager.LoadDBC("UIMapArtStyleLayer", CASC.BuildName);
-            var WorldMapOverlay = DBCManager.LoadDBC("WorldMapOverlay", CASC.BuildName);
-            var WorldMapOverlayTile = DBCManager.LoadDBC("WorldMapOverlayTile", CASC.BuildName);
+            var UIMap = dbcd.Load("UiMap", CASC.BuildName);
+            var UIMapXArt = dbcd.Load("UiMapXMapArt", CASC.BuildName);
+            var UIMapArtTile = dbcd.Load("UiMapArtTile", CASC.BuildName);
+            var UIMapArt = dbcd.Load("UiMapArt", CASC.BuildName);
+            var UIMapArtStyleLayer = dbcd.Load("UiMapArtStyleLayer", CASC.BuildName);
+            var WorldMapOverlay = dbcd.Load("WorldMapOverlay", CASC.BuildName);
+            var WorldMapOverlayTile = dbcd.Load("WorldMapOverlayTile", CASC.BuildName);
 
             Console.WriteLine(); // new line after wdc2 debug output
 
-            foreach (dynamic mapRow in UIMap)
+            foreach (dynamic mapRow in UIMap.Values)
             {
-                var mapName = mapRow.Value.Name_lang;
+                var mapName = mapRow.Name_lang;
 
-                Console.WriteLine(mapRow.Key + " = " + mapName);
+                Console.WriteLine(mapRow.ID + " = " + mapName);
 
-                foreach (dynamic mxaRow in UIMapXArt)
+                foreach (dynamic mxaRow in UIMapXArt.Values)
                 {
-                    var uiMapArtID = mxaRow.Value.UiMapArtID;
-                    var uiMapID = mxaRow.Value.UiMapID;
+                    var uiMapArtID = mxaRow.UiMapArtID;
+                    var uiMapID = mxaRow.UiMapID;
 
-                    if (mxaRow.Value.PhaseID != 0)
+                    if (mxaRow.PhaseID != 0)
                         continue; // Skip phase stuff for now
 
-                    if (uiMapID == mapRow.Key)
+                    if (uiMapID == mapRow.ID)
                     {
                         var maxRows = uint.MinValue;
                         var maxCols = uint.MinValue;
                         var tileDict = new Dictionary<string, int>();
 
-                        foreach (dynamic matRow in UIMapArtTile)
+                        foreach (dynamic matRow in UIMapArtTile.Values)
                         {
-                            var matUiMapArtID = matRow.Value.UiMapArtID;
+                            var matUiMapArtID = matRow.UiMapArtID;
                             if (matUiMapArtID == uiMapArtID)
                             {
-                                var fdid = matRow.Value.FileDataID;
-                                var rowIndex = matRow.Value.RowIndex;
-                                var colIndex = matRow.Value.ColIndex;
-                                var layerIndex = matRow.Value.LayerIndex;
+                                var fdid = matRow.FileDataID;
+                                var rowIndex = matRow.RowIndex;
+                                var colIndex = matRow.ColIndex;
+                                var layerIndex = matRow.LayerIndex;
 
                                 // Skip other layers for now
                                 if (layerIndex != 0)
@@ -172,16 +132,16 @@ namespace WorldMapCompiler
                         uint res_x = 0;
                         uint res_y = 0;
 
-                        foreach (dynamic maRow in UIMapArt)
+                        foreach (dynamic maRow in UIMapArt.Values)
                         {
-                            if(maRow.Value.ID == uiMapArtID)
+                            if(maRow.ID == uiMapArtID)
                             {
-                                foreach (dynamic mastRow in UIMapArtStyleLayer)
+                                foreach (dynamic mastRow in UIMapArtStyleLayer.Values)
                                 {
-                                    if (mastRow.Value.ID == maRow.Value.UiMapArtStyleID)
+                                    if (mastRow.ID == maRow.UiMapArtStyleID)
                                     {
-                                        res_x = mastRow.Value.LayerHeight;
-                                        res_y = mastRow.Value.LayerWidth;
+                                        res_x = mastRow.LayerHeight;
+                                        res_y = mastRow.LayerWidth;
                                         continue;
                                     }
                                 }
@@ -229,7 +189,7 @@ namespace WorldMapCompiler
 
                         if (saveUnexplored)
                         {
-                            bmp.Save("unexplored/ " + CleanFileName(mapRow.Key + " - " + mapName + ".png"));
+                            bmp.Save("unexplored/ " + CleanFileName(mapRow.ID + " - " + mapName + ".png"));
                         }
 
                         if (!saveLayers && !saveExplored)
@@ -237,11 +197,11 @@ namespace WorldMapCompiler
                             continue;
                         }
 
-                        foreach (dynamic wmorow in WorldMapOverlay)
+                        foreach (dynamic wmorow in WorldMapOverlay.Values)
                         {
-                            var WMOUIMapArtID = wmorow.Value.UiMapArtID;
-                            var offsetX = wmorow.Value.OffsetX;
-                            var offsetY = wmorow.Value.OffsetY;
+                            var WMOUIMapArtID = wmorow.UiMapArtID;
+                            var offsetX = wmorow.OffsetX;
+                            var offsetY = wmorow.OffsetY;
 
                             uint maxWMORows = 0;
                             uint maxWMOCols = 0;
@@ -249,17 +209,17 @@ namespace WorldMapCompiler
 
                             if (WMOUIMapArtID == uiMapArtID)
                             {
-                                foreach (dynamic wmotrow in WorldMapOverlayTile)
+                                foreach (dynamic wmotrow in WorldMapOverlayTile.Values)
                                 {
-                                    var worldMapOverlayID = wmotrow.Value.WorldMapOverlayID;
+                                    var worldMapOverlayID = wmotrow.WorldMapOverlayID;
 
                                     // something wrong in/around this check
-                                    if (worldMapOverlayID == wmorow.Key)
+                                    if (worldMapOverlayID == wmorow.ID)
                                     {
-                                        var fdid = wmotrow.Value.FileDataID;
-                                        var rowIndex = wmotrow.Value.RowIndex;
-                                        var colIndex = wmotrow.Value.ColIndex;
-                                        var layerIndex = wmotrow.Value.LayerIndex;
+                                        var fdid = wmotrow.FileDataID;
+                                        var rowIndex = wmotrow.RowIndex;
+                                        var colIndex = wmotrow.ColIndex;
+                                        var layerIndex = wmotrow.LayerIndex;
 
                                         // Skip other layers for now
                                         if (layerIndex != 0)
@@ -326,17 +286,18 @@ namespace WorldMapCompiler
 
                             if (saveLayers)
                             {
-                                if (!Directory.Exists("layers/" + CleanFileName(mapRow.Key + " - " + mapName) + "/"))
+                                if (!Directory.Exists("layers/" + CleanFileName(mapRow
+                                    + " - " + mapName) + "/"))
                                 {
-                                    Directory.CreateDirectory("layers/" + CleanFileName(mapRow.Key + " - " + mapName) + "/");
+                                    Directory.CreateDirectory("layers/" + CleanFileName(mapRow.ID + " - " + mapName) + "/");
                                 }
-                                layerBitmap.Save("layers/" + CleanFileName(mapRow.Key + " - " + mapName) + "/" + wmorow.Key + ".png");
+                                layerBitmap.Save("layers/" + CleanFileName(mapRow.ID + " - " + mapName) + "/" + wmorow.ID + ".png");
                             }
                         }
 
                         if (saveExplored)
                         {
-                            bmp.Save("explored/ " + CleanFileName(mapRow.Key + " - " + mapName + ".png"));
+                            bmp.Save("explored/ " + CleanFileName(mapRow.ID + " - " + mapName + ".png"));
                         }
                     }
                 }

@@ -1,6 +1,6 @@
 [submodule "WoWFormatLib"]
 	path = WoWFormatLib
 	url = https://github.com/Marlamin/WoWFormatLib
-[submodule "DBDefsLib"]
-	path = DBDefsLib
-	url = https://github.com/wowdev/DBDefsLib
+[submodule "DBCD"]
+	path = DBCD
+	url = https://github.com/wowdev/DBCD.git
