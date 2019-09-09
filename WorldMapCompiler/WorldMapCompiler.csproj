@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -14,6 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CASCLib" Version="1.0.6" />
     <PackageReference Include="DB2FileReaderLib.NET" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
@@ -22,13 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WoWFormatLib\WoWFormatLib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="DBDefsLib">
-      <HintPath>..\..\..\..\GitHub\WoWDBDefs\code\C#\DBDefsLib\bin\Debug\netstandard2.0\DBDefsLib.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\DBDefsLib\DBDefsLib.csproj" />
+    <ProjectReference Include="..\WoWFormatLib\WoWFormatLib\WoWFormatLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
