@@ -85,7 +85,7 @@ namespace WorldMapCompiler
 
             Console.WriteLine(); // new line after wdc2 debug output
 
-            foreach (dynamic mapRow in UIMap.Values)
+            foreach (dynamic mapRow in UIMap.Values.Reverse())
             {
                 var mapName = mapRow.Name_lang;
 
