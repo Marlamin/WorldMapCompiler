@@ -75,13 +75,26 @@ namespace WorldMapCompiler
 
             var dbcd = new DBCD.DBCD(new CASCDBCProvider(), new DBCD.Providers.GithubDBDProvider());
 
-            var UIMap = dbcd.Load("UiMap", CASC.BuildName);
-            var UIMapXArt = dbcd.Load("UiMapXMapArt", CASC.BuildName);
-            var UIMapArtTile = dbcd.Load("UiMapArtTile", CASC.BuildName);
-            var UIMapArt = dbcd.Load("UiMapArt", CASC.BuildName);
-            var UIMapArtStyleLayer = dbcd.Load("UiMapArtStyleLayer", CASC.BuildName);
-            var WorldMapOverlay = dbcd.Load("WorldMapOverlay", CASC.BuildName);
-            var WorldMapOverlayTile = dbcd.Load("WorldMapOverlayTile", CASC.BuildName);
+            string build;
+
+            if (CASC.BuildName.StartsWith("WOW-"))
+            {
+                var buildNumber = CASC.BuildName.Split("patch")[0].Replace("WOW-", "");
+                var buildName = CASC.BuildName.Split("patch")[1].Split('_')[0];
+                build = buildName + "." + buildNumber;
+            }
+            else
+            {
+                build = CASC.BuildName;
+            }
+
+            var UIMap = dbcd.Load("UiMap", build);
+            var UIMapXArt = dbcd.Load("UiMapXMapArt", build);
+            var UIMapArtTile = dbcd.Load("UiMapArtTile", build);
+            var UIMapArt = dbcd.Load("UiMapArt", build);
+            var UIMapArtStyleLayer = dbcd.Load("UiMapArtStyleLayer", build);
+            var WorldMapOverlay = dbcd.Load("WorldMapOverlay", build);
+            var WorldMapOverlayTile = dbcd.Load("WorldMapOverlayTile", build);
 
             Console.WriteLine(); // new line after wdc2 debug output
 
@@ -312,7 +325,7 @@ namespace WorldMapCompiler
 
                         if (saveExplored)
                         {
-                            bmp.Save("explored/ " + CleanFileName(mapRow.ID + " - " + mapName + ".png"));
+                            bmp.Save("explored/" + CleanFileName(mapRow.ID + ".png"));
                         }
 
                         if (saveExploredMapsWithoutUnexplored)
