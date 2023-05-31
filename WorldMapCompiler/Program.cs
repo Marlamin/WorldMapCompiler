@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using SereniaBLPLib;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
-using SereniaBLPLib;
 using WoWFormatLib.Utils;
 
 namespace WorldMapCompiler
@@ -153,7 +153,7 @@ namespace WorldMapCompiler
 
                         foreach (dynamic maRow in UIMapArt.Values)
                         {
-                            if(maRow.ID == uiMapArtID)
+                            if (maRow.ID == uiMapArtID)
                             {
                                 foreach (dynamic mastRow in UIMapArtStyleLayer.Values)
                                 {
@@ -168,12 +168,12 @@ namespace WorldMapCompiler
                             }
                         }
 
-                        if(res_x == 0)
+                        if (res_x == 0)
                         {
                             res_x = (maxRows + 1) * 256;
                         }
 
-                        if(res_y == 0)
+                        if (res_y == 0)
                         {
                             res_y = (maxCols + 1) * 256;
                         }
@@ -192,17 +192,19 @@ namespace WorldMapCompiler
 
                                 if (CASC.FileExists((uint)fdid))
                                 {
-                                    using (var stream = CASC.OpenFile((uint)fdid))
+                                    try
                                     {
-                                        try
+                                        using (var stream = CASC.OpenFile((uint)fdid))
                                         {
+
                                             var blp = new BlpFile(stream);
                                             g.DrawImage(blp.GetBitmap(0), cur_y * 256, cur_x * 256, new Rectangle(0, 0, 256, 256), GraphicsUnit.Pixel);
+
                                         }
-                                        catch (Exception e)
-                                        {
-                                            Console.WriteLine("An error occured opening BLP with filedataid " + fdid);
-                                        }
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine("An error occured opening BLP with filedataid " + fdid + ": " + e.Message);
                                     }
                                 }
                             }
@@ -282,9 +284,9 @@ namespace WorldMapCompiler
 
                                     if (CASC.FileExists((uint)fdid))
                                     {
-                                        using (var stream = CASC.OpenFile((uint)fdid))
+                                        try
                                         {
-                                            try
+                                            using (var stream = CASC.OpenFile((uint)fdid))
                                             {
                                                 var blp = new BlpFile(stream);
                                                 var posY = cur_y * 256 + offsetX;
@@ -303,10 +305,11 @@ namespace WorldMapCompiler
                                                     g2.DrawImage(blpBMP, posY, posX, new Rectangle(0, 0, 256, 256), GraphicsUnit.Pixel);
                                                 }
                                             }
-                                            catch (Exception e)
-                                            {
-                                                Console.WriteLine("An error occured opening BLP with filedataid " + fdid);
-                                            }
+
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            Console.WriteLine("An error occured opening BLP with filedataid " + fdid);
                                         }
                                     }
                                 }
