@@ -14,8 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CASCLib" Version="1.0.16" />
-    <PackageReference Include="DB2FileReaderLib.NET" Version="1.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.JSON" Version="2.2.0" />
     <PackageReference Include="runtime.linux-x64.CoreCompat.System.Drawing" Version="1.0.0-beta009" />
@@ -23,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DBCD\DBCD\DBCD.csproj" />
     <ProjectReference Include="..\WoWFormatLib\WoWFormatLib\WoWFormatLib.csproj" />
   </ItemGroup>
 

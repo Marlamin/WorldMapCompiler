@@ -1,15 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29230.47
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldMapCompiler", "WorldMapCompiler\WorldMapCompiler.csproj", "{48D49A12-6167-4C48-9699-83222DF2BFC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WoWFormatLib", "WoWFormatLib\WoWFormatLib\WoWFormatLib.csproj", "{5DB0FB8F-0EAA-490A-AA7D-28AE010186A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBCD", "DBCD\DBCD\DBCD.csproj", "{8E77F6BF-1324-4CE1-9A13-55A7DD09A2E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManualCompiler", "ManualCompiler\ManualCompiler.csproj", "{2F6EDF4B-3E56-47EE-8CA8-DAB510D0A54A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBFileReaderLib", "DBCD\DBFileReaderLib\DBFileReaderLib.csproj", "{C2F25A76-D4A9-41D9-991D-44338664BC62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SereniaBLPLib", "WoWFormatLib\SereniaBLPLib\SereniaBLPLib\SereniaBLPLib.csproj", "{FBB4F6FD-E159-4E9D-9199-1AE09AA76FAE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBCD", "WoWFormatLib\DBCD\DBCD\DBCD.csproj", "{728B07C1-C0F0-4017-B35D-61C68D31C1D4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBFileReaderLib", "WoWFormatLib\DBCD\DBFileReaderLib\DBFileReaderLib.csproj", "{5E155695-0478-41B6-BD1F-7B0D988E1DF1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CascLib", "WoWFormatLib\CascLib\CascLib\CascLib.csproj", "{5026C7B4-D0AB-4868-AB9B-9F4DA95B520D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +31,26 @@ Global
 		{5DB0FB8F-0EAA-490A-AA7D-28AE010186A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DB0FB8F-0EAA-490A-AA7D-28AE010186A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DB0FB8F-0EAA-490A-AA7D-28AE010186A9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8E77F6BF-1324-4CE1-9A13-55A7DD09A2E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8E77F6BF-1324-4CE1-9A13-55A7DD09A2E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8E77F6BF-1324-4CE1-9A13-55A7DD09A2E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8E77F6BF-1324-4CE1-9A13-55A7DD09A2E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2F25A76-D4A9-41D9-991D-44338664BC62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2F25A76-D4A9-41D9-991D-44338664BC62}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2F25A76-D4A9-41D9-991D-44338664BC62}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2F25A76-D4A9-41D9-991D-44338664BC62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F6EDF4B-3E56-47EE-8CA8-DAB510D0A54A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F6EDF4B-3E56-47EE-8CA8-DAB510D0A54A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F6EDF4B-3E56-47EE-8CA8-DAB510D0A54A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F6EDF4B-3E56-47EE-8CA8-DAB510D0A54A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBB4F6FD-E159-4E9D-9199-1AE09AA76FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBB4F6FD-E159-4E9D-9199-1AE09AA76FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBB4F6FD-E159-4E9D-9199-1AE09AA76FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBB4F6FD-E159-4E9D-9199-1AE09AA76FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728B07C1-C0F0-4017-B35D-61C68D31C1D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728B07C1-C0F0-4017-B35D-61C68D31C1D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728B07C1-C0F0-4017-B35D-61C68D31C1D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728B07C1-C0F0-4017-B35D-61C68D31C1D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E155695-0478-41B6-BD1F-7B0D988E1DF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E155695-0478-41B6-BD1F-7B0D988E1DF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E155695-0478-41B6-BD1F-7B0D988E1DF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E155695-0478-41B6-BD1F-7B0D988E1DF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5026C7B4-D0AB-4868-AB9B-9F4DA95B520D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5026C7B4-D0AB-4868-AB9B-9F4DA95B520D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5026C7B4-D0AB-4868-AB9B-9F4DA95B520D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5026C7B4-D0AB-4868-AB9B-9F4DA95B520D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
