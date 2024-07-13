@@ -61,6 +61,9 @@ namespace WorldMapCompiler
                     case "zhTW":
                         locale = LocaleFlags.zhTW;
                         break;
+                    case "frFR":
+                        locale = LocaleFlags.frFR;
+                        break;
                 }
             }
 
