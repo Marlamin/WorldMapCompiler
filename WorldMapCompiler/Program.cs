@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using CASCLib;
+using Microsoft.Extensions.Configuration;
 using SereniaBLPLib;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using WoWFormatLib.Utils;
 
 namespace WorldMapCompiler
 {
@@ -40,52 +40,55 @@ namespace WorldMapCompiler
                 Directory.CreateDirectory("exploredNoUnexplored");
             }
 
-            var locale = CASCLib.LocaleFlags.enUS;
+            var locale = LocaleFlags.enUS;
 
             if (config["locale"] != string.Empty)
             {
                 switch (config["locale"])
                 {
                     case "deDE":
-                        locale = CASCLib.LocaleFlags.deDE;
+                        locale = LocaleFlags.deDE;
                         break;
                     case "enUS":
-                        locale = CASCLib.LocaleFlags.enUS;
+                        locale = LocaleFlags.enUS;
                         break;
                     case "ruRU":
-                        locale = CASCLib.LocaleFlags.ruRU;
+                        locale = LocaleFlags.ruRU;
                         break;
                     case "zhCN":
-                        locale = CASCLib.LocaleFlags.zhCN;
+                        locale = LocaleFlags.zhCN;
                         break;
                     case "zhTW":
-                        locale = CASCLib.LocaleFlags.zhTW;
+                        locale = LocaleFlags.zhTW;
                         break;
                 }
             }
 
+            CASCHandler cascHandler;
             if (config["installDir"] != string.Empty && Directory.Exists(config["installDir"]))
             {
-                CASC.InitCasc(null, config["installDir"], config["program"], locale);
+                cascHandler = CASCHandler.OpenLocalStorage(config["installDir"], config["program"]);
             }
             else
             {
-                CASC.InitCasc(null, null, config["program"], locale);
+                cascHandler = CASCHandler.OpenOnlineStorage(config["program"]);
             }
 
-            var dbcd = new DBCD.DBCD(new CASCDBCProvider(), new DBCD.Providers.GithubDBDProvider());
+            cascHandler.Root.SetFlags(locale);
+
+            var dbcd = new DBCD.DBCD(new CASCDBCProvider(cascHandler), new DBCD.Providers.GithubDBDProvider());
 
             string build;
 
-            if (CASC.BuildName.StartsWith("WOW-"))
+            if (cascHandler.Config.BuildName.StartsWith("WOW-"))
             {
-                var buildNumber = CASC.BuildName.Split("patch")[0].Replace("WOW-", "");
-                var buildName = CASC.BuildName.Split("patch")[1].Split('_')[0];
+                var buildNumber = cascHandler.Config.BuildName.Split("patch")[0].Replace("WOW-", "");
+                var buildName = cascHandler.Config.BuildName.Split("patch")[1].Split('_')[0];
                 build = buildName + "." + buildNumber;
             }
             else
             {
-                build = CASC.BuildName;
+                build = cascHandler.Config.BuildName;
             }
 
             var UIMap = dbcd.Load("UiMap", build);
@@ -190,11 +193,11 @@ namespace WorldMapCompiler
                             {
                                 var fdid = tileDict[cur_x + "," + cur_y];
 
-                                if (CASC.FileExists((uint)fdid))
+                                if (cascHandler.FileExists(fdid))
                                 {
                                     try
                                     {
-                                        using (var stream = CASC.OpenFile((uint)fdid))
+                                        using (var stream = cascHandler.OpenFile(fdid))
                                         {
 
                                             var blp = new BlpFile(stream);
@@ -282,11 +285,11 @@ namespace WorldMapCompiler
                                 {
                                     var fdid = wmoTileDict[cur_x + "," + cur_y];
 
-                                    if (CASC.FileExists((uint)fdid))
+                                    if (cascHandler.FileExists(fdid))
                                     {
                                         try
                                         {
-                                            using (var stream = CASC.OpenFile((uint)fdid))
+                                            using (var stream = cascHandler.OpenFile(fdid))
                                             {
                                                 var blp = new BlpFile(stream);
                                                 var posY = cur_y * 256 + offsetX;

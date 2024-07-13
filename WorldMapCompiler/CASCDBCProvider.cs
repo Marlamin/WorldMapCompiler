@@ -1,12 +1,19 @@
-﻿using DBCD.Providers;
+﻿using CASCLib;
+using DBCD.Providers;
 using System;
 using System.IO;
-using WoWFormatLib.Utils;
 
 namespace WorldMapCompiler
 {
     class CASCDBCProvider : IDBCProvider
     {
+        private static CASCHandler CASC;
+
+        public CASCDBCProvider(CASCHandler casc)
+        {
+            CASC = casc;
+        }
+
         public Stream StreamForTableName(string tableName, string build)
         {
             uint fileDataID = 0;
@@ -38,9 +45,9 @@ namespace WorldMapCompiler
                     throw new Exception("Unable to find FileDataID for DBC " + tableName);
             }
 
-            if (CASC.FileExists(fileDataID))
+            if (CASC.FileExists((int)fileDataID))
             {
-                return CASC.OpenFile(fileDataID);
+                return CASC.OpenFile((int)fileDataID);
             }
             else
             {
