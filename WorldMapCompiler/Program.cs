@@ -1,11 +1,13 @@
-﻿using CASCLib;
+﻿using BLPSharp;
+using CASCLib;
 using Microsoft.Extensions.Configuration;
-using SereniaBLPLib;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace WorldMapCompiler
 {
@@ -102,11 +104,21 @@ namespace WorldMapCompiler
             var WorldMapOverlay = dbcd.Load("WorldMapOverlay", build);
             var WorldMapOverlayTile = dbcd.Load("WorldMapOverlayTile", build);
 
+            var options = new GraphicsOptions
+            {
+                ColorBlendingMode = PixelColorBlendingMode.Normal, // Normal, Multiply, Screen, etc.
+                AlphaCompositionMode = PixelAlphaCompositionMode.SrcOver, // SrcOver (default), SrcAtop, etc.
+                // Alpha = 1f // Opacity (1f for fully opaque)
+            };
+
             Console.WriteLine(); // new line after wdc2 debug output
 
             foreach (dynamic mapRow in UIMap.Values.Reverse())
             {
+                if (mapRow.ID != 2413 && mapRow.ID != 2395 && mapRow.ID != 2393 && mapRow.ID != 2405) continue;
+                
                 var mapName = mapRow.Name_lang;
+                var cleanMapName = CleanFileName($"{mapRow.ID} - {mapName}");
 
                 Console.WriteLine(mapRow.ID + " = " + mapName);
 
@@ -184,11 +196,7 @@ namespace WorldMapCompiler
                             res_y = (maxCols + 1) * 256;
                         }
 
-                        var bmp = new Bitmap((int)res_y, (int)res_x);
-                        var g = Graphics.FromImage(bmp);
-
-                        var bmp2 = new Bitmap((int)res_y, (int)res_x);
-                        var g2 = Graphics.FromImage(bmp2);
+                        Image<Bgra32> image1 = new((int)res_y, (int)res_x);
 
                         for (var cur_x = 0; cur_x < maxRows + 1; cur_x++)
                         {
@@ -202,10 +210,11 @@ namespace WorldMapCompiler
                                     {
                                         using (var stream = cascHandler.OpenFile(fdid))
                                         {
-
-                                            var blp = new BlpFile(stream);
-                                            g.DrawImage(blp.GetBitmap(0), cur_y * 256, cur_x * 256, new Rectangle(0, 0, 256, 256), GraphicsUnit.Pixel);
-
+                                            var blp = new BLPFile(stream);
+                                            var pixels = blp.GetPixels(1, out int width, out int height);
+                                            var layer = Image.LoadPixelData<Bgra32>(pixels, width, height);
+                                            layer.Mutate(ctx => ctx.Resize(256, 256));
+                                            image1.Mutate(ctx => ctx.DrawImage(layer, new Point(cur_y * 256, cur_x * 256), options));
                                         }
                                     }
                                     catch (Exception e)
@@ -216,9 +225,9 @@ namespace WorldMapCompiler
                             }
                         }
 
-                        if (saveUnexplored)
+                        if (saveUnexplored && image1 != null)
                         {
-                            bmp.Save("unexplored/ " + CleanFileName(mapRow.ID + " - " + mapName + ".png"));
+                            image1.Save(Path.Join("unexplored", $"{cleanMapName}.png"));
                         }
 
                         if (!saveLayers && !saveExplored)
@@ -226,6 +235,8 @@ namespace WorldMapCompiler
                             continue;
                         }
 
+                        Image<Bgra32> image2 = new((int)res_x, (int)res_y);
+                        
                         foreach (dynamic wmorow in WorldMapOverlay.Values)
                         {
                             var WMOUIMapArtID = wmorow.UiMapArtID;
@@ -279,8 +290,7 @@ namespace WorldMapCompiler
                             var layerResX = (maxWMORows + 1) * 256;
                             var layerResY = (maxWMOCols + 1) * 256;
 
-                            var layerBitmap = new Bitmap((int)layerResY, (int)layerResX);
-                            var layerGraphics = Graphics.FromImage(layerBitmap);
+                            var layerImage = new Image<Bgra32>((int)layerResY, (int)layerResX);
 
                             for (var cur_x = 0; cur_x < maxWMORows + 1; cur_x++)
                             {
@@ -294,21 +304,24 @@ namespace WorldMapCompiler
                                         {
                                             using (var stream = cascHandler.OpenFile(fdid))
                                             {
-                                                var blp = new BlpFile(stream);
+                                                var blp = new BLPFile(stream);
+                                                var pixels = blp.GetPixels(1, out int width, out int height);
+                                                var layer = Image.LoadPixelData<Bgra32>(pixels, width, height);
+                                                layer.Mutate(ctx => ctx.Resize(256, 256));
+                                                
                                                 var posY = cur_y * 256 + offsetX;
                                                 var posX = cur_x * 256 + offsetY;
 
                                                 if (saveLayers)
                                                 {
-                                                    layerGraphics.DrawImage(blp.GetBitmap(0), cur_y * 256, cur_x * 256, new Rectangle(0, 0, 256, 256), GraphicsUnit.Pixel);
+                                                    layerImage.Mutate(ctx => ctx.DrawImage(layer, new Point(cur_y * 256, cur_x * 256), options));
                                                 }
 
-                                                var blpBMP = blp.GetBitmap(0);
-                                                g.DrawImage(blpBMP, posY, posX, new Rectangle(0, 0, 256, 256), GraphicsUnit.Pixel);
+                                                image1.Mutate(ctx => ctx.DrawImage(layer, new Point(posY, posX), options));
 
                                                 if (saveExploredMapsWithoutUnexplored)
                                                 {
-                                                    g2.DrawImage(blpBMP, posY, posX, new Rectangle(0, 0, 256, 256), GraphicsUnit.Pixel);
+                                                    image2.Mutate(ctx => ctx.DrawImage(layer, new Point(posY, posX), options));
                                                 }
                                             }
 
@@ -328,18 +341,19 @@ namespace WorldMapCompiler
                                 {
                                     Directory.CreateDirectory("layers/" + CleanFileName(mapRow.ID + " - " + mapName) + "/");
                                 }
-                                layerBitmap.Save("layers/" + CleanFileName(mapRow.ID + " - " + mapName) + "/" + wmorow.ID + ".png");
+                                
+                                layerImage.Save(Path.Join("layers", cleanMapName, $"{wmorow.ID}.png"));
                             }
                         }
 
                         if (saveExplored)
                         {
-                            bmp.Save("explored/" + CleanFileName(mapRow.ID + ".png"));
+                            image1.Save(Path.Join("explored", $"{cleanMapName}.png"));
                         }
 
                         if (saveExploredMapsWithoutUnexplored)
                         {
-                            bmp2.Save("exploredNoUnexplored/ " + CleanFileName(mapRow.ID + " - " + mapName + ".png"));
+                            image2.Save(Path.Join("exploredNoUnexplored", $"{cleanMapName}.png"));
                         }
                     }
                 }

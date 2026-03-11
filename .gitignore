@@ -40,3 +40,6 @@ Packages/*
 
 # Don't include cached data files
 *.db2
+WorldMapCompiler/cache/
+WorldMapCompiler/explored/
+WorldMapCompiler/layers/
