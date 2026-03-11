@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Version>0.5.1</Version>
   </PropertyGroup>
 
@@ -23,7 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CASCLib\CascLib\CascLib.csproj" />
     <ProjectReference Include="..\DBCD\DBCD\DBCD.csproj" />
-    <ProjectReference Include="..\DBCD\DBFileReaderLib\DBFileReaderLib.csproj" />
+    <ProjectReference Include="..\DBCD\DBCD.IO\DBCD.IO.csproj" />
   </ItemGroup>
 
   <ItemGroup>
