@@ -124,8 +124,6 @@ internal class Program
 
         foreach (dynamic mapRow in UIMap.Values.Reverse())
         {
-            if (mapRow.ID != 2413 && mapRow.ID != 2395 && mapRow.ID != 2393 && mapRow.ID != 2405) continue;
-
             var mapName = mapRow.Name_lang;
             var cleanMapName = CleanFileName($"{mapRow.ID} - {mapName}");
 
