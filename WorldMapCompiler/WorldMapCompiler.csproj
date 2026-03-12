@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Version>0.5.1</Version>
   </PropertyGroup>
 
@@ -15,15 +15,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.JSON" Version="2.2.0" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.7" />
+    <PackageReference Include="BLPSharp" Version="0.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.JSON" Version="10.0.4" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CASCLib\CascLib\CascLib.csproj" />
     <ProjectReference Include="..\DBCD\DBCD\DBCD.csproj" />
-    <ProjectReference Include="..\DBCD\DBFileReaderLib\DBFileReaderLib.csproj" />
+    <ProjectReference Include="..\DBCD\DBCD.IO\DBCD.IO.csproj" />
   </ItemGroup>
 
   <ItemGroup>
