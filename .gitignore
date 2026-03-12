@@ -38,6 +38,9 @@ SharpDX
 # NuGet
 Packages/*
 
+# JetBrains
+.idea/
+
 # Don't include cached data files
 *.db2
 WorldMapCompiler/cache/
