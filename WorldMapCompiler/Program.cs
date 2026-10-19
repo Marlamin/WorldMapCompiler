@@ -1,14 +1,15 @@
 ﻿using BLPSharp;
-using CASCLib;
 using Microsoft.Extensions.Configuration;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SixLabors.ImageSharp.Formats.Png;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+using TACTSharp;
+using static TACTSharp.RootInstance;
 
 namespace WorldMapCompiler;
 
@@ -91,31 +92,31 @@ internal class Program
             }
         }
 
-        CASCHandler cascHandler;
+        BuildInstance buildInstance = new();
         if (config["installDir"] != string.Empty && Directory.Exists(config["installDir"]))
         {
-            cascHandler = CASCHandler.OpenLocalStorage(config["installDir"], config["program"]);
+            buildInstance.LoadLocal(config["installDir"], config["program"]);
         }
         else
         {
-            cascHandler = CASCHandler.OpenOnlineStorage(config["program"]);
+            buildInstance.LoadOnline(config["program"]);
         }
 
-        cascHandler.Root.SetFlags(locale);
+        buildInstance.Settings.Locale = locale;
 
-        var dbcd = new DBCD.DBCD(new CASCDBCProvider(cascHandler), new DBCD.Providers.GithubDBDProvider());
+        var dbcd = new DBCD.DBCD(new CASCDBCProvider(buildInstance), new DBCD.Providers.GithubDBDProvider());
 
         string build;
 
-        if (cascHandler.Config.BuildName.StartsWith("WOW-"))
+        if (buildInstance.BuildConfig.Values["build-name"][0].StartsWith("WOW-"))
         {
-            var buildNumber = cascHandler.Config.BuildName.Split("patch")[0].Replace("WOW-", "");
-            var buildName = cascHandler.Config.BuildName.Split("patch")[1].Split('_')[0];
+            var buildNumber = buildInstance.BuildConfig.Values["build-name"][0].Split("patch")[0].Replace("WOW-", "");
+            var buildName = buildInstance.BuildConfig.Values["build-name"][0].Split("patch")[1].Split('_')[0];
             build = buildName + "." + buildNumber;
         }
         else
         {
-            build = cascHandler.Config.BuildName;
+            build = buildInstance.BuildConfig.Values["build-name"][0];
         }
 
         var UIMap = dbcd.Load("UiMap", build);
@@ -219,11 +220,11 @@ internal class Program
                     {
                         var fdid = tileDict[cur_x + "," + cur_y];
 
-                        if (cascHandler.FileExists(fdid))
+                        if (buildInstance.Root.FileExists((uint)fdid))
                         {
                             try
                             {
-                                using (var stream = cascHandler.OpenFile(fdid))
+                                using (var stream = new MemoryStream(buildInstance.OpenFileByFDID((uint)fdid)))
                                 {
                                     var layer = LoadBlp(stream);
                                     layer.Mutate(ctx => ctx.Resize(Resize256X256));
@@ -313,14 +314,14 @@ internal class Program
                         {
                             var fdid = wmoTileDict[cur_x + "," + cur_y];
 
-                            if (!cascHandler.FileExists(fdid))
+                            if (!buildInstance.Root.FileExists((uint)fdid))
                             {
                                 continue;
                             }
 
                             try
                             {
-                                using (var stream = cascHandler.OpenFile(fdid))
+                                using (var stream = new MemoryStream(buildInstance.OpenFileByFDID((uint)fdid)))
                                 {
                                     var layer = LoadBlp(stream);
                                     layer.Mutate(ctx => ctx.Resize(Resize256X256));
@@ -387,7 +388,7 @@ internal class Program
         var pixels = blp.GetPixels(0, out int width, out int height);
         return Image.LoadPixelData<Bgra32>(pixels, width, height);
     }
-    
+
     private static void SaveImage(Image image, string filename)
     {
         image.Save(filename, Encoder);

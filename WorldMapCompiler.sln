@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.4.33205.214
+# Visual Studio Version 18
+VisualStudioVersion = 18.10.12224.181 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldMapCompiler", "WorldMapCompiler\WorldMapCompiler.csproj", "{48D49A12-6167-4C48-9699-83222DF2BFC8}"
 EndProject
@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBCD", "DBCD\DBCD\DBCD.cspr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBCD.IO", "DBCD\DBCD.IO\DBCD.IO.csproj", "{B0CF402E-4B58-4A0B-A67D-0C21098B758A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CascLib", "CASCLib\CascLib\CascLib.csproj", "{53A50EEA-7FA4-4313-A9C8-D7C124CA0B41}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TACTSharp", "TACTSharp\TACTSharp\TACTSharp.csproj", "{884A4B58-7B4E-73BF-73CC-48C2E526EC3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{B0CF402E-4B58-4A0B-A67D-0C21098B758A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0CF402E-4B58-4A0B-A67D-0C21098B758A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0CF402E-4B58-4A0B-A67D-0C21098B758A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53A50EEA-7FA4-4313-A9C8-D7C124CA0B41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53A50EEA-7FA4-4313-A9C8-D7C124CA0B41}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53A50EEA-7FA4-4313-A9C8-D7C124CA0B41}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53A50EEA-7FA4-4313-A9C8-D7C124CA0B41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{884A4B58-7B4E-73BF-73CC-48C2E526EC3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{884A4B58-7B4E-73BF-73CC-48C2E526EC3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{884A4B58-7B4E-73BF-73CC-48C2E526EC3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{884A4B58-7B4E-73BF-73CC-48C2E526EC3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

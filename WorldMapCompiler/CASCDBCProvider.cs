@@ -1,15 +1,15 @@
-﻿using CASCLib;
-using DBCD.Providers;
+﻿using DBCD.Providers;
 using System;
 using System.IO;
+using TACTSharp;
 
 namespace WorldMapCompiler
 {
     class CASCDBCProvider : IDBCProvider
     {
-        private static CASCHandler CASC;
+        private static BuildInstance CASC;
 
-        public CASCDBCProvider(CASCHandler casc)
+        public CASCDBCProvider(BuildInstance casc)
         {
             CASC = casc;
         }
@@ -45,9 +45,9 @@ namespace WorldMapCompiler
                     throw new Exception("Unable to find FileDataID for DBC " + tableName);
             }
 
-            if (CASC.FileExists((int)fileDataID))
+            if (CASC.Root.FileExists(fileDataID))
             {
-                return CASC.OpenFile((int)fileDataID);
+                return new MemoryStream(CASC.OpenFileByFDID(fileDataID));
             }
             else
             {

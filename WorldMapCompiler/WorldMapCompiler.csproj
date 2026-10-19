@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
-    <Version>0.6.1</Version>
+    <Version>0.7.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CASCLib\CascLib\CascLib.csproj" />
     <ProjectReference Include="..\DBCD\DBCD\DBCD.csproj" />
     <ProjectReference Include="..\DBCD\DBCD.IO\DBCD.IO.csproj" />
+    <ProjectReference Include="..\TACTSharp\TACTSharp\TACTSharp.csproj" />
   </ItemGroup>
 
   <ItemGroup>

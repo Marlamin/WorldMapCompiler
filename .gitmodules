@@ -1,6 +1,6 @@
-[submodule "CASCLib"]
-	path = CASCLib
-	url = https://github.com/Marlamin/CASCLib
 [submodule "DBCD"]
 	path = DBCD
 	url = https://github.com/wowdev/DBCD
+[submodule "TACTSharp"]
+	path = TACTSharp
+	url = https://github.com/wowdev/TACTSharp
