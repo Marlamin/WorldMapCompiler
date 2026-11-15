@@ -324,7 +324,14 @@ internal class Program
                                 using (var stream = new MemoryStream(buildInstance.OpenFileByFDID((uint)fdid)))
                                 {
                                     var layer = LoadBlp(stream);
-                                    layer.Mutate(ctx => ctx.Resize(Resize256X256));
+                                    var visibleWidth = Math.Min(layer.Width, (int)wmorow.TextureWidth - cur_y * 256);
+                                    var visibleHeight = Math.Min(layer.Height, (int)wmorow.TextureHeight - cur_x * 256);
+                                    if (visibleWidth <= 0 || visibleHeight <= 0)
+                                    {
+                                        continue;
+                                    }
+
+                                    layer.Mutate(ctx => ctx.Crop(visibleWidth, visibleHeight));
 
                                     var posY = cur_y * 256 + offsetX;
                                     var posX = cur_x * 256 + offsetY;
